@@ -135,7 +135,6 @@ D3DXMATRIX RenderObject::CreateWorldMatrix(const D3DXVECTOR3& position, const D3
 		float width = viewPort.Width * 0.5f;
 		float height = viewPort.Height * 0.5f;
 
-		ref_count_ptr<DxCamera> camera = graphics->GetCamera();
 		ref_count_ptr<DxCamera2D> camera2D = graphics->GetCamera2D();
 		if (camera2D->IsEnable()) {
 			D3DXMATRIX matCamera = camera2D->GetMatrix();
@@ -148,8 +147,10 @@ D3DXMATRIX RenderObject::CreateWorldMatrix(const D3DXVECTOR3& position, const D3
 		D3DXMATRIX matScale;
 		D3DXMatrixScaling(&matScale, 200.0f, 200.0f, -0.002f);
 
-		const D3DXMATRIX& matInvView = camera->GetViewInverseMatrix();
-		const D3DXMATRIX& matInvProj = camera->GetProjectionInverseMatrix();
+		D3DXMATRIX matViewProj;
+		D3DXMATRIX matInvViewProj;
+		device->GetTransform(D3DTS_VIEW, &matViewProj);
+		D3DXMatrixInverse(&matInvViewProj, nullptr, &matViewProj);
 		D3DXMATRIX matInvViewPort;
 		D3DXMatrixIdentity(&matInvViewPort);
 		matInvViewPort._11 = 1.0f / width;
@@ -157,7 +158,7 @@ D3DXMATRIX RenderObject::CreateWorldMatrix(const D3DXVECTOR3& position, const D3
 		matInvViewPort._41 = -1.0f;
 		matInvViewPort._42 = 1.0f;
 
-		mat = mat * matTrans * matScale * matInvViewPort * matInvProj * matInvView;
+		mat = mat * matTrans * matScale * matInvViewPort * matInvViewProj;
 		mat._43 *= -1;
 	}
 
@@ -200,7 +201,6 @@ D3DXMATRIX RenderObject::CreateWorldMatrix(const D3DXVECTOR3& position, const D3
 		float width = viewPort.Width * 0.5f;
 		float height = viewPort.Height * 0.5f;
 
-		ref_count_ptr<DxCamera> camera = graphics->GetCamera();
 		ref_count_ptr<DxCamera2D> camera2D = graphics->GetCamera2D();
 		if (camera2D->IsEnable()) {
 			D3DXMatrixMultiply(&mat, &mat, &camera2D->GetMatrix());
@@ -212,8 +212,10 @@ D3DXMATRIX RenderObject::CreateWorldMatrix(const D3DXVECTOR3& position, const D3
 		D3DXMATRIX matScale;
 		D3DXMatrixScaling(&matScale, 200.0f, 200.0f, -0.002f);
 
-		const D3DXMATRIX& matInvView = camera->GetViewInverseMatrix();
-		const D3DXMATRIX& matInvProj = camera->GetProjectionInverseMatrix();
+		D3DXMATRIX matViewProj;
+		D3DXMATRIX matInvViewProj;
+		device->GetTransform(D3DTS_VIEW, &matViewProj);
+		D3DXMatrixInverse(&matInvViewProj, nullptr, &matViewProj);
 		D3DXMATRIX matInvViewPort;
 		D3DXMatrixIdentity(&matInvViewPort);
 		matInvViewPort._11 = 1.0f / width;
@@ -221,7 +223,7 @@ D3DXMATRIX RenderObject::CreateWorldMatrix(const D3DXVECTOR3& position, const D3
 		matInvViewPort._41 = -1.0f;
 		matInvViewPort._42 = 1.0f;
 
-		mat = mat * matTrans * matScale * matInvViewPort * matInvProj * matInvView;
+		mat = mat * matTrans * matScale * matInvViewPort * matInvViewProj;
 		mat._43 *= -1;
 	}
 
