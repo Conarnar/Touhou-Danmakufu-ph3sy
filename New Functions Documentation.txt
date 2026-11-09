@@ -3494,6 +3494,24 @@ ALL ARGUMENTS ARE FLOATS UNLESS STATED OTHERWISE
 			Sets the render priority of hitbox visualizations.
 			
 			Default value is 68. (GetCameraFocusPermitPriorityI() - 1)
+
+	GetStgObject2dPosition
+		Arguments:
+			1) (int) object ID
+		Returns:
+			(float[2]) position [x, y]
+		Description:
+			Returns the 2D coordinates of a 3D object projected onto the STG frame.
+
+	GetStg2dPosition
+		Arguments:
+			1) (float) x position
+			2) (float) y position
+			3) (float) z position
+		Returns:
+			(float[2]) position [x, y]
+		Description:
+			Returns the 2D coordinates of the given 3D coordinates projected onto the STG frame.
 	
 	--------------------------------> Player Functions <--------------------------------
 	

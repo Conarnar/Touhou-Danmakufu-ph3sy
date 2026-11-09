@@ -1,5 +1,12 @@
 A mostly-complete history log of engine updates can be found here.
 
+1.0.2:
+	Additions:
+		- Fixed GetStg2dPosition and GetStgObject2dPosition.
+			- These are equivalent to Get2dPosition and GetObject2dPosition, but relative to the camera in the STG frame instead.
+	Bug fixes:
+		- Fixed ObjMesh_SetCoordinate2D making meshes not render correctly.
+
 1.0.1:
 	Bug fixes:
 		- Fixed items not moving correctly.
