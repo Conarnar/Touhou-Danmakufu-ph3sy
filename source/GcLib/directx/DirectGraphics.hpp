@@ -391,7 +391,7 @@ namespace directx {
 		void SetProjectionMatrix();
 		void UpdateDeviceViewProjectionMatrix();
 
-		D3DXVECTOR2 TransformCoordinateTo2D(D3DXVECTOR3 pos);
+		D3DXVECTOR2 TransformCoordinateTo2D(D3DXVECTOR3 pos, float width, float height);
 
 		const D3DXMATRIX& GetViewMatrix() { return matView_; }
 		const D3DXMATRIX& GetViewProjectionMatrix() { return matViewProjection_; }

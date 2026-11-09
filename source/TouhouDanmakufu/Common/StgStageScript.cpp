@@ -359,6 +359,8 @@ static const std::vector<function> stgStageFunction = {
 	{ "StopSlow", StgStageScript::Func_StopSlow, 1 },
 	{ "IsIntersected_Obj_Obj", StgStageScript::Func_IsIntersected_Obj_Obj<true>, 2 },
 	{ "IsIntersected_Obj_Obj_All", StgStageScript::Func_IsIntersected_Obj_Obj<false>, 2 },
+	{ "GetStgObject2dPosition", StgStageScript::Func_GetStgObject2dPosition, 1 },
+	{ "GetStg2dPosition", StgStageScript::Func_GetStg2dPosition, 3 },
 
 	//STG共通関数：移動オブジェクト操作
 	{ "ObjMove_SetX", StgStageScript::Func_ObjMove_SetX, 2 },
@@ -2606,6 +2608,53 @@ gstd::value StgStageScript::Func_IsIntersected_Obj_Obj(gstd::script_machine* mac
 
 lab_return:
 	return script->CreateBooleanValue(res);
+}
+gstd::value StgStageScript::Func_GetStgObject2dPosition(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+
+	int id = argv[0].as_int();
+
+	float listRes[2] = { (float)DxScript::g_posInvalidX_, (float)DxScript::g_posInvalidY_ };
+
+	DxScriptRenderObject* obj = script->GetObjectPointerAs<DxScriptRenderObject>(id);
+	if (obj) {
+		DirectGraphics* graphics = DirectGraphics::GetBase();
+		ref_count_ptr<DxCamera> camera = graphics->GetCamera();
+		ref_count_ptr<StgStageInformation> stageInfo = stageController->GetStageInformation();
+		DxRect<LONG>* rcStgFrame = stageInfo->GetStgFrameRect();
+
+		LONG stgWidth = rcStgFrame->right - rcStgFrame->left;
+		LONG stgHeight = rcStgFrame->bottom - rcStgFrame->top;
+
+		D3DXVECTOR2 point = camera->TransformCoordinateTo2D(obj->GetPosition(), stgWidth, stgHeight);
+		listRes[0] = point.x;
+		listRes[1] = point.y;
+	}
+
+	return script->CreateFloatArrayValue(listRes, 2U);
+}
+gstd::value StgStageScript::Func_GetStg2dPosition(gstd::script_machine* machine, int argc, const gstd::value* argv) {
+	StgStageScript* script = (StgStageScript*)machine->data;
+	StgStageController* stageController = script->stageController_;
+	ref_count_ptr<StgStageInformation> stageInfo = stageController->GetStageInformation();
+	DxRect<LONG>* rcStgFrame = stageInfo->GetStgFrameRect();
+
+	LONG stgWidth = rcStgFrame->right - rcStgFrame->left;
+	LONG stgHeight = rcStgFrame->bottom - rcStgFrame->top;
+
+	float px = argv[0].as_float();
+	float py = argv[1].as_float();
+	float pz = argv[2].as_float();
+	D3DXVECTOR3 pos(px, py, pz);
+
+	DirectGraphics* graphics = DirectGraphics::GetBase();
+	ref_count_ptr<DxCamera> camera = graphics->GetCamera();
+
+	D3DXVECTOR2 point = camera->TransformCoordinateTo2D(pos, stgWidth, stgHeight);
+	float listRes[2] = { point.x, point.y };
+
+	return script->CreateFloatArrayValue(listRes, 2U);
 }
 
 

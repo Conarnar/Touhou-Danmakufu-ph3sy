@@ -2153,7 +2153,7 @@ gstd::value DxScript::Func_GetObject2dPosition(gstd::script_machine* machine, in
 		DirectGraphics* graphics = DirectGraphics::GetBase();
 		ref_count_ptr<DxCamera> camera = graphics->GetCamera();
 
-		D3DXVECTOR2 point = camera->TransformCoordinateTo2D(obj->GetPosition());
+		D3DXVECTOR2 point = camera->TransformCoordinateTo2D(obj->GetPosition(), graphics->GetScreenWidth(), graphics->GetScreenHeight());
 		listRes[0] = point.x;
 		listRes[1] = point.y;
 	}
@@ -2171,7 +2171,7 @@ gstd::value DxScript::Func_Get2dPosition(gstd::script_machine* machine, int argc
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	ref_count_ptr<DxCamera> camera = graphics->GetCamera();
 
-	D3DXVECTOR2 point = camera->TransformCoordinateTo2D(pos);
+	D3DXVECTOR2 point = camera->TransformCoordinateTo2D(pos, graphics->GetScreenWidth(), graphics->GetScreenHeight());
 	float listRes[2] = { point.x, point.y };
 
 	return script->CreateFloatArrayValue(listRes, 2U);

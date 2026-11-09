@@ -1495,18 +1495,24 @@ void DxCamera::UpdateDeviceViewProjectionMatrix() {
 	device->SetTransform(D3DTS_VIEW, &matViewProjection_);
 	device->SetTransform(D3DTS_PROJECTION, &matIdentity_);
 }
-D3DXVECTOR2 DxCamera::TransformCoordinateTo2D(D3DXVECTOR3 pos) {
+D3DXVECTOR2 DxCamera::TransformCoordinateTo2D(D3DXVECTOR3 pos, float width, float height) {
 	DirectGraphics* graphics = DirectGraphics::GetBase();
 	IDirect3DDevice9* device = graphics->GetDevice();
-	LONG width = graphics->GetScreenWidth();
-	LONG height = graphics->GetScreenHeight();
+
+	D3DXMATRIX matProjection;
+	D3DXMatrixPerspectiveFovLH(&matProjection, D3DXToRadian(45.0),
+		width / height, clipNear_, clipFar_);
+	D3DXMATRIX matViewProjection = matView_ * matProjection;
 
 	D3DXVECTOR4 vect;
-	D3DXVec3Transform(&vect, &pos, &matViewProjection_);
+	D3DXVec3Transform(&vect, &pos, &matViewProjection);
+
+	const float widthCenter = width / 2.0f;
+	const float heightCenter = height / 2.0f;
 
 	if (vect.w > 0) {
-		vect.x = width / 2.0f + (vect.x / vect.w) * width / 2.0f;
-		vect.y = height / 2.0f - (vect.y / vect.w) * height / 2.0f; // Ｙ方向は上が正となるため
+		vect.x = widthCenter + (vect.x / vect.w) * widthCenter;
+		vect.y = heightCenter - (vect.y / vect.w) * heightCenter; // Ｙ方向は上が正となるため
 		return D3DXVECTOR2(vect.x, vect.y);
 	}
 

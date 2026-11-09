@@ -308,6 +308,8 @@ public:
 	
 	template<bool PARTIAL>
 	static gstd::value Func_IsIntersected_Obj_Obj(gstd::script_machine* machine, int argc, const gstd::value* argv);
+	DNH_FUNCAPI_DECL_(Func_GetStgObject2dPosition);
+	DNH_FUNCAPI_DECL_(Func_GetStg2dPosition);
 
 	//STG共通関数：移動オブジェクト操作
 	static gstd::value Func_ObjMove_SetX(gstd::script_machine* machine, int argc, const gstd::value* argv);
